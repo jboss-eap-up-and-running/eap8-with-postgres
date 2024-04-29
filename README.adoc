@@ -1,0 +1,35 @@
+= Connect JBoss EAP 8.0 to a PostgreSQL database on OpenShift
+
+== The Application
+
+The `src/main` folder contains a simple application exposing a REST endpoint which allows users to post data. Posted data is stored in a database. Then there is an endpoint allowing users to get data stored in the database.
+
+=== Deploying the application on OpenShift with Helm
+
+To install the application on OpenShift, you can install a Helm release that will deploy a PostgreSQL database and build and deploy the application with EAP 7.4.
+
+Please follow https://jboss-eap-up-and-running.github.io/helm-charts/[the instructions] to set up the Helm examples in OpenShift and install the 
+`JBoss EAP 8.0 + PostgreSQL` Helm example.
+
+=== Running the 'simple' setup application
+
+Create a few entries in the database by running the following POST commands:
+
+[source,shell]
+----
+curl -k -X POST https://$(oc get route eap8-with-postgres --template='{{ .spec.host }}')/app?value=Hello+World
+curl -k -X POST https://$(oc get route eap8-with-postgres --template='{{ .spec.host }}')/app?value=Bonjour+le+Monde
+----
+
+Then we can read the entries we added
+
+[source,shell]
+----
+curl -k https://$(oc get route eap8-with-postgres --template='{{ .spec.host }}')/app
+----
+which should return
+
+[source,shell]
+----
+["Hello World","Bonjour le Monde"]
+----

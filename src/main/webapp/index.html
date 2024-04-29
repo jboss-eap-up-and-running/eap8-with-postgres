@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JBoss EAP 8 With PostgreSQL</title>
+  <style>
+        h1, h2, h3, h4, h5, h6 {
+            margin-bottom: 0.5rem;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            font-size: 2rem
+        }
+
+        h3 {
+            font-size: 1.75rem
+        }
+
+        h4 {
+            font-size: 1.5rem
+        }
+
+        h5 {
+            font-size: 1.25rem
+        }
+
+        h6 {
+            font-size: 1rem
+        }
+
+        .lead {
+            font-weight: 300;
+            font-size: 2rem;
+        }
+
+        .banner {
+            font-size: 2.7rem;
+            margin: 0;
+            padding: 2rem 1rem;
+            background-color: #C23C1F;
+            color: white;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+
+        code {
+            font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 87.5%;
+            color: #e83e8c;
+            word-break: break-word;
+        }
+
+        .left-column {
+            padding: .75rem;
+            max-width: 75%;
+            min-width: 55%;
+        }
+
+        .right-column {
+            padding: .75rem;
+            max-width: 25%;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+        }
+
+        li {
+            margin: 0.75rem;
+        }
+
+        .right-section {
+            margin-left: 1rem;
+            padding-left: 0.5rem;
+        }
+
+        .right-section h3 {
+            padding-top: 0;
+            font-weight: 200;
+        }
+
+        .right-section ul {
+            border-left: 0.3rem solid #00A1E2;
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="banner lead">
+  Your JBoss EAP 8 application is ready!
+</div>
+
+<div class="container">
+  <div class="left-column">
+    <p class="lead"> Congratulations, you have deployed a JBoss EAP 8 application that is connected to PostgreSQL.</p>
+
+    <h2>Why do you see this?</h2>
+
+    <p>This page is served by your application. The source is in
+      <code>src/main/webapp/index.html</code>.</p>
+
+    <h2>Interacting with the application</h2>
+
+    <p>The application exposes an HTTP endpoint <a href="/app/">/app</a> to list all the items stored in the database </p>
+
+    <p>You can add items to the database by sending HTTP POST request to the application endpoint:</p>
+
+    <form action="/app" method="post" id="form">
+        <input type="text" id="item-value" name="value" value="Lorem Ipsum" placeholder="Add a new item">
+        <button type="submit">Add</button>
+    </form>
+
+    <ul id="items"></ul>
+
+    <h2>How do you get rid of this page?</h2>
+
+    <p>Just delete the <code>src/main/resources/META-INF/resources/index.html</code> file.</p>
+  </div>
+  <div class="right-column">
+    <div class="right-section">
+    </div>
+  </div>
+</div>
+</body>
+
+<script>
+let form = document.getElementById("form");
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const postNewItem = new XMLHttpRequest();
+  postNewItem.onreadystatechange = () => {
+    if (postNewItem.readyState === 4 && postNewItem.status === 200) {
+      const getAllItems = new XMLHttpRequest();
+      getAllItems.onreadystatechange = () => {
+        if (getAllItems.readyState === 4 && getAllItems.status === 200) {
+          console.log(getAllItems);
+          values = JSON.parse(getAllItems.response);
+          console.log("values = " + values);
+          let items = document.getElementById("items");
+          items.innerHTML = "";
+          for (const v of values) {
+            console.log(v);
+            var li = document.createElement("li");
+            li.appendChild(document.createTextNode(v));
+            items.appendChild(li);
+          }
+        }
+      };
+      getAllItems.open('GET', form.action, true);
+      getAllItems.send();
+    }
+  };
+  let newItem = document.getElementById("item-value").value;
+  postNewItem.open('POST', form.action + "?value=" + encodeURIComponent(newItem), true);
+  postNewItem.setRequestHeader("Content-Type", "text/plain");
+  postNewItem.send();
+});
+
+</script>
+</html>
