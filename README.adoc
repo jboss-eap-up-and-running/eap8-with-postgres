@@ -6,7 +6,7 @@ The `src/main` folder contains a simple application exposing a REST endpoint whi
 
 === Deploying the application on OpenShift with Helm
 
-To install the application on OpenShift, you can install a Helm release that will deploy a PostgreSQL database and build and deploy the application with EAP 7.4.
+To install the application on OpenShift, you can install a Helm release that will deploy a PostgreSQL database and build and deploy the application with EAP 8.0.
 
 Please follow https://jboss-eap-up-and-running.github.io/helm-charts/[the instructions] to set up the Helm examples in OpenShift and install the 
 `JBoss EAP 8.0 + PostgreSQL` Helm example.
